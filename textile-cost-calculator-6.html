@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة تكاليف منتج الغزل</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header p {
+            opacity: 0.95;
+            font-size: 1.1em;
+        }
+
+        .content {
+            padding: 35px;
+        }
+
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 2px solid #e9ecef;
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .inputs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #dee2e6;
+            transition: all 0.3s;
+        }
+
+        .input-group:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1.05em;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .quantity-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+            margin-bottom: 20px;
+        }
+
+        .quantity-section label {
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-calculate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-calculate:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-reset {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #5a6268;
+            transform: translateY(-3px);
+        }
+
+        .results-section {
+            margin-top: 30px;
+        }
+
+        .result-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-right: 5px solid #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .result-card:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .result-label {
+            font-size: 1.1em;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .result-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .result-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border: none;
+            border-right: none;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+        }
+
+        .result-primary .result-label {
+            color: white;
+            opacity: 0.95;
+            font-size: 1.2em;
+        }
+
+        .result-primary .result-value {
+            color: white;
+            font-size: 2.5em;
+        }
+
+        .result-success {
+            background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);
+            color: white;
+            border: none;
+        }
+
+        .result-success .result-label,
+        .result-success .result-value {
+            color: white;
+        }
+
+        .result-warning {
+            background: linear-gradient(135deg, #ffd43b 0%, #fab005 100%);
+            color: #2c3e50;
+            border: none;
+        }
+
+        .profit-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .breakdown-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .breakdown-row:last-child {
+            border-bottom: none;
+            background: #f8f9fa;
+            font-weight: 700;
+        }
+
+        .breakdown-row span:first-child {
+            color: #495057;
+        }
+
+        .breakdown-row span:last-child {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #adb5bd;
+        }
+
+        .empty-state-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 768px) {
+            .inputs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.6em;
+            }
+
+            .result-primary .result-value {
+                font-size: 2em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+
+        .cost-icon {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧵 حاسبة تكاليف منتج الغزل</h1>
+            <p>احسب تكلفة الإنتاج والربح بدقة وسهولة</p>
+        </div>
+
+        <div class="content">
+            <!-- قسم الكمية -->
+            <div class="section">
+                <div class="section-title">
+                    📦 الكمية المنتجة
+                </div>
+                <div class="quantity-section">
+                    <label>إجمالي الكمية المنتجة</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="quantity" placeholder="مثال: 1000" min="1" step="1" value="">
+                        <span class="currency-symbol">وحدة</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم التكاليف -->
+            <div class="section">
+                <div class="section-title">
+                    💰 بنود التكاليف
+                </div>
+
+                <div class="inputs-grid">
+                    <div class="input-group">
+                        <label>💼 المرتبات والأجور</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="salaries" placeholder="0" min="0" step="0.01" value="">
+                            <span class="currency-symbol">ج.م</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>⚡ الكهرباء</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="electricity" placeholder="0" min="0" step="0.01" value="">
+                            <span class="currency-symbol">ج.م</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>🏢 الإيجار</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="rent" placeholder="0" min="0" step="0.01" value="">
+                            <span class="currency-symbol">ج.م</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>🧶 المادة الخام (القطن/البوليستر)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="rawMaterial" placeholder="0" min="0" step="0.01" value="">
+                            <span class="currency-symbol">ج.م</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>⚙️ مصروفات التشغيل</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="operating" placeholder="0" min="0" step="0.01" value="">
+                            <span class="currency-symbol">ج.م</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>🔧 قطع الغيار</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="spareParts" placeholder="0" min="0" step="0.01" value="">
+                            <span class="currency-symbol">ج.م</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>📋 مصروفات أخرى</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="other" placeholder="0" min="0" step="0.01" value="">
+                            <span class="currency-symbol">ج.م</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم سعر البيع -->
+            <div class="section">
+                <div class="section-title">
+                    💵 سعر البيع
+                </div>
+                <div class="quantity-section">
+                    <label>سعر بيع الوحدة الواحدة</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="sellingPrice" placeholder="0" min="0" step="0.01" value="">
+                        <span class="currency-symbol">ج.م</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- أزرار التحكم -->
+            <div class="button-group">
+                <button class="btn-calculate" onclick="calculateCosts()">
+                    🧮 احسب التكاليف والأرباح
+                </button>
+                <button class="btn-reset" onclick="resetCalculator()">
+                    🔄 إعادة تعيين
+                </button>
+            </div>
+
+            <!-- قسم النتائج -->
+            <div class="results-section">
+                <div id="resultsContainer" class="hidden">
+                    <div class="section">
+                        <div class="section-title">
+                            📊 النتائج
+                        </div>
+
+                        <!-- تكلفة الوحدة -->
+                        <div class="result-card result-primary">
+                            <div class="result-label">تكلفة الوحدة الواحدة</div>
+                            <div class="result-value" id="unitCost">0.00 ج.م</div>
+                            <div class="profit-indicator" id="unitMargin"></div>
+                        </div>
+
+                        <!-- إجمالي التكاليف -->
+                        <div class="result-card">
+                            <div class="result-label">إجمالي التكاليف</div>
+                            <div class="result-value" id="totalCost">0.00 ج.م</div>
+                        </div>
+
+                        <!-- إجمالي الإيرادات -->
+                        <div class="result-card">
+                            <div class="result-label">إجمالي الإيرادات المتوقعة</div>
+                            <div class="result-value" id="totalRevenue">0.00 ج.م</div>
+                        </div>
+
+                        <!-- الربح -->
+                        <div class="result-card result-success" id="profitCard">
+                            <div class="result-label">صافي الربح</div>
+                            <div class="result-value" id="profit">0.00 ج.م</div>
+                        </div>
+
+                        <!-- نسبة الربح -->
+                        <div class="result-card result-warning">
+                            <div class="result-label">نسبة الربح</div>
+                            <div class="result-value" id="profitMargin">0%</div>
+                        </div>
+
+                        <!-- تفاصيل التكاليف -->
+                        <div style="margin-top: 30px;">
+                            <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 1.3em;">📋 تفاصيل التكاليف</h3>
+                            <div class="breakdown-table" id="breakdownTable"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="emptyState" class="empty-state">
+                    <div class="empty-state-icon">📊</div>
+                    <div class="empty-state-text">أدخل البيانات واضغط على "احسب التكاليف والأرباح"</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateCosts() {
+            // الحصول على القيم
+            const quantity = parseFloat(document.getElementById('quantity').value) || 0;
+            const salaries = parseFloat(document.getElementById('salaries').value) || 0;
+            const electricity = parseFloat(document.getElementById('electricity').value) || 0;
+            const rent = parseFloat(document.getElementById('rent').value) || 0;
+            const rawMaterial = parseFloat(document.getElementById('rawMaterial').value) || 0;
+            const operating = parseFloat(document.getElementById('operating').value) || 0;
+            const spareParts = parseFloat(document.getElementById('spareParts').value) || 0;
+            const other = parseFloat(document.getElementById('other').value) || 0;
+            const sellingPrice = parseFloat(document.getElementById('sellingPrice').value) || 0;
+
+            // التحقق من الكمية
+            if (quantity <= 0) {
+                alert('⚠️ من فضلك أدخل كمية الإنتاج');
+                return;
+            }
+
+            // حساب إجمالي التكاليف
+            const totalCost = salaries + electricity + rent + rawMaterial + operating + spareParts + other;
+            
+            // حساب تكلفة الوحدة
+            const unitCost = totalCost / quantity;
+            
+            // حساب الإيرادات
+            const totalRevenue = sellingPrice * quantity;
+            
+            // حساب الربح
+            const profit = totalRevenue - totalCost;
+            
+            // حساب نسبة الربح
+            const profitMargin = totalCost > 0 ? (profit / totalCost) * 100 : 0;
+            
+            // حساب هامش الربح للوحدة
+            const unitProfit = sellingPrice - unitCost;
+            const unitMargin = unitCost > 0 ? (unitProfit / unitCost) * 100 : 0;
+
+            // عرض النتائج
+            document.getElementById('unitCost').textContent = formatNumber(unitCost) + ' ج.م';
+            document.getElementById('totalCost').textContent = formatNumber(totalCost) + ' ج.م';
+            document.getElementById('totalRevenue').textContent = formatNumber(totalRevenue) + ' ج.م';
+            document.getElementById('profit').textContent = formatNumber(profit) + ' ج.م';
+            document.getElementById('profitMargin').textContent = profitMargin.toFixed(2) + '%';
+            
+            // عرض هامش الربح للوحدة
+            const marginText = `هامش ربح الوحدة: ${formatNumber(unitProfit)} ج.م (${unitMargin.toFixed(2)}%)`;
+            document.getElementById('unitMargin').textContent = marginText;
+
+            // تغيير لون كارت الربح حسب القيمة
+            const profitCard = document.getElementById('profitCard');
+            if (profit < 0) {
+                profitCard.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)';
+                profitCard.querySelector('.result-label').textContent = 'الخسارة';
+            } else {
+                profitCard.style.background = 'linear-gradient(135deg, #51cf66 0%, #37b24d 100%)';
+                profitCard.querySelector('.result-label').textContent = 'صافي الربح';
+            }
+
+            // إنشاء جدول التفاصيل
+            const breakdownHTML = `
+                <div class="breakdown-row">
+                    <span>💼 المرتبات والأجور</span>
+                    <span>${formatNumber(salaries)} ج.م</span>
+                </div>
+                <div class="breakdown-row">
+                    <span>⚡ الكهرباء</span>
+                    <span>${formatNumber(electricity)} ج.م</span>
+                </div>
+                <div class="breakdown-row">
+                    <span>🏢 الإيجار</span>
+                    <span>${formatNumber(rent)} ج.م</span>
+                </div>
+                <div class="breakdown-row">
+                    <span>🧶 المادة الخام</span>
+                    <span>${formatNumber(rawMaterial)} ج.م</span>
+                </div>
+                <div class="breakdown-row">
+                    <span>⚙️ مصروفات التشغيل</span>
+                    <span>${formatNumber(operating)} ج.م</span>
+                </div>
+                <div class="breakdown-row">
+                    <span>🔧 قطع الغيار</span>
+                    <span>${formatNumber(spareParts)} ج.م</span>
+                </div>
+                <div class="breakdown-row">
+                    <span>📋 مصروفات أخرى</span>
+                    <span>${formatNumber(other)} ج.م</span>
+                </div>
+                <div class="breakdown-row">
+                    <span>💰 الإجمالي</span>
+                    <span>${formatNumber(totalCost)} ج.م</span>
+                </div>
+            `;
+            document.getElementById('breakdownTable').innerHTML = breakdownHTML;
+
+            // إظهار النتائج
+            document.getElementById('resultsContainer').classList.remove('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+
+            // التمرير إلى النتائج
+            document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function formatNumber(num) {
+            return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function resetCalculator() {
+            // مسح جميع الحقول
+            document.getElementById('quantity').value = '';
+            document.getElementById('salaries').value = '';
+            document.getElementById('electricity').value = '';
+            document.getElementById('rent').value = '';
+            document.getElementById('rawMaterial').value = '';
+            document.getElementById('operating').value = '';
+            document.getElementById('spareParts').value = '';
+            document.getElementById('other').value = '';
+            document.getElementById('sellingPrice').value = '';
+
+            // إخفاء النتائج
+            document.getElementById('resultsContainer').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+
+            // التمرير إلى الأعلى
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // السماح بالحساب عند الضغط على Enter
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    calculateCosts();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
